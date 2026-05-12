@@ -1,10 +1,12 @@
 let video; // 宣告一個全域變數來儲存攝影機影像
 let faceMesh; // faceMesh 模型物件
 let faces = []; // 儲存偵測到的臉部結果
+let earringImg; // 儲存耳環圖片
 
 function preload() {
   // 初始化 faceMesh 模型
   faceMesh = ml5.faceMesh();
+  earringImg = loadImage('pic/acc/acc1_ring.png'); // 讀取耳環圖片
 }
 
 function setup() {
@@ -59,9 +61,6 @@ function draw() {
 }
 
 function drawEarring(pt, imgW, imgH) {
-  fill('#ffff00'); // 黃色
-  noStroke();
-  
   // 使用 video.elt.videoWidth 獲取攝影機原始解析度，解決座標偏移問題
   let vW = video.elt.videoWidth || 640;
   let vH = video.elt.videoHeight || 480;
@@ -69,14 +68,15 @@ function drawEarring(pt, imgW, imgH) {
   let dx = map(pt.x, 0, vW, -imgW / 2, imgW / 2);
   let dy = map(pt.y, 0, vH, -imgH / 2, imgH / 2);
 
-  // 從耳垂位置往下畫三個圓圈
-  for (let i = 0; i < 3; i++) {
-    circle(dx, dy + (i * 12) + 5, 8); // 微調間距與半徑，使其看起來更像垂吊耳環
-  }
+  // 繪製耳環圖片
+  push();
+  imageMode(CENTER);
+  // 這裡將圖片中心點稍微往下移 (dy + 15)，並設定寬度為 30，高度 40 (可依圖片比例調整)
+  image(earringImg, dx, dy + 15, 30, 40); 
+  pop();
 }
 
 // 當視窗大小改變時，重新調整畫布大小以保持全螢幕
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-
