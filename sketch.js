@@ -108,12 +108,16 @@ function drawEarring(pt, imgW, imgH) {
   dx += (dx < 0 ? -1 : 1) * (imgW * 0.03);
   dy -= (imgH * 0.02);
 
-  // 繪製耳環圖片
-  push();
-  imageMode(CENTER);
-  // 依影像比例設定耳環大小 (寬度為影像 6%, 高度為影像 10%)，並繪製當前選中的圖片
-  image(earringImages[currentImgIndex], dx, dy, imgW * 0.06, imgH * 0.1); 
-  pop();
+  // 檢查圖片是否已成功載入且有效 (width > 1 代表圖片已載入)
+  // 這樣即使某張圖片 404 也不會導致整個畫面卡住
+  let img = earringImages[currentImgIndex];
+  if (img && img.width > 1) {
+    push();
+    imageMode(CENTER);
+    // 依影像比例設定耳環大小 (寬度為影像 6%, 高度為影像 10%)，並繪製當前選中的圖片
+    image(img, dx, dy, imgW * 0.06, imgH * 0.1); 
+    pop();
+  }
 }
 
 // 當視窗大小改變時，重新調整畫布大小以保持全螢幕
