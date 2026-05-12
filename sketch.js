@@ -1,12 +1,23 @@
 let video; // 宣告一個全域變數來儲存攝影機影像
 let faceMesh; // faceMesh 模型物件
 let faces = []; // 儲存偵測到的臉部結果
-let earringImg; // 儲存耳環圖片
+let handPose; // handPose 模型物件
+let hands = []; // 儲存手勢偵測結果
+let earringImages = []; // 儲存五種耳環圖片
+let currentImgIndex = 0; // 當前選擇的耳環索引
 
 function preload() {
   // 初始化 faceMesh 模型
   faceMesh = ml5.faceMesh();
-  earringImg = loadImage('pic/acc/acc1_ring.png'); // 讀取耳環圖片
+  // 初始化 handPose 模型
+  handPose = ml5.handPose();
+
+  // 讀取指定的五種耳環圖片
+  earringImages[0] = loadImage('pic/acc/acc1_ring.png');
+  earringImages[1] = loadImage('pic/acc/acc2_pearl.png');
+  earringImages[2] = loadImage('pic/acc/acc3_tassel.png');
+  earringImages[3] = loadImage('pic/acc/acc4_jade.png');
+  earringImages[4] = loadImage('pic/acc/acc5_phoenix.png');
 }
 
 function setup() {
@@ -16,11 +27,18 @@ function setup() {
 
   // 開始持續偵測影像中的臉部
   faceMesh.detectStart(video, gotFaces);
+  // 開始持續偵測影像中的手勢
+  handPose.detectStart(video, gotHands);
 }
 
 // 取得偵測結果的回呼函式
 function gotFaces(results) {
   faces = results;
+}
+
+// 取得手勢偵測結果的回呼函式
+function gotHands(results) {
+  hands = results;
 }
 
 function draw() {
@@ -34,6 +52,23 @@ function draw() {
   text("414730159彭宥蓁", width / 2, 20);
   textSize(18);
   text("作品為影像辨識_耳環臉譜", width / 2, 55);
+
+  // 偵測手勢手指數量來切換耳環
+  if (hands.length > 0) {
+    let hand = hands[0];
+    let count = 0;
+    // 偵測食指、中指、無名指、小指 (比較指尖與第二關節的 Y 座標)
+    if (hand.keypoints[8].y < hand.keypoints[6].y) count++;
+    if (hand.keypoints[12].y < hand.keypoints[10].y) count++;
+    if (hand.keypoints[16].y < hand.keypoints[14].y) count++;
+    if (hand.keypoints[20].y < hand.keypoints[18].y) count++;
+    // 偵測大拇指 (判斷與手掌中心的距離是否展開)
+    if (dist(hand.keypoints[4].x, hand.keypoints[4].y, hand.keypoints[0].x, hand.keypoints[0].y) > 
+        dist(hand.keypoints[3].x, hand.keypoints[3].y, hand.keypoints[0].x, hand.keypoints[0].y) * 1.2) count++;
+
+    // 若手指數量為 1-5，則切換對應圖片
+    if (count >= 1 && count <= 5) currentImgIndex = count - 1;
+  }
 
   // 計算影像應顯示的寬高，為畫布的 50%
   let imgW = width * 0.5;
@@ -67,12 +102,17 @@ function drawEarring(pt, imgW, imgH) {
   
   let dx = map(pt.x, 0, vW, -imgW / 2, imgW / 2);
   let dy = map(pt.y, 0, vH, -imgH / 2, imgH / 2);
+  
+  // 比率位移：往外移動影像寬度的 2%，往上移動影像高度的 1%
+  // dx 為負代表畫面左邊(右耳)，往外即是減少 dx；dx 為正代表畫面右邊(左耳)，往外即是增加 dx
+  dx += (dx < 0 ? -1 : 1) * (imgW * 0.02);
+  dy -= (imgH * 0.01);
 
   // 繪製耳環圖片
   push();
   imageMode(CENTER);
-  // 這裡將圖片中心點稍微往下移 (dy + 15)，並設定寬度為 30，高度 40 (可依圖片比例調整)
-  image(earringImg, dx, dy + 15, 30, 40); 
+  // 依影像比例設定耳環大小，並繪製當前選中的圖片
+  image(earringImages[currentImgIndex], dx, dy + 15, imgW * 0.05, imgH * 0.08); 
   pop();
 }
 
