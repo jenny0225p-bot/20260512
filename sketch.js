@@ -13,11 +13,11 @@ function preload() {
   handPose = ml5.handPose();
 
   // 讀取指定的五種耳環圖片
-  earringImages[0] = loadImage('20260512/pic/acc/acc1_ring.png');
-  earringImages[1] = loadImage('20260512/pic/acc/acc2_pearl.png');
-  earringImages[2] = loadImage('20260512/pic/acc/acc3_tassel.png');
-  earringImages[3] = loadImage('20260512/pic/acc/acc4_jade.png');
-  earringImages[4] = loadImage('20260512/pic/acc/acc5_phoenix.png');
+  earringImages[0] = loadImage('20260512/pic/acc1_ring.png');
+  earringImages[1] = loadImage('20260512/pic/acc2_pearl.png');
+  earringImages[2] = loadImage('20260512/pic/acc3_tassel.png');
+  earringImages[3] = loadImage('20260512/pic/acc4_jade.png');
+  earringImages[4] = loadImage('20260512/pic/acc5_phoenix.png');
 }
 
 function setup() {
