@@ -13,11 +13,11 @@ function preload() {
   handPose = ml5.handPose();
 
   // 讀取指定的五種耳環圖片
-  earringImages[0] = loadImage('20260512/pic/acc1_ring.png');
-  earringImages[1] = loadImage('20260512/pic/acc2_pearl.png');
-  earringImages[2] = loadImage('20260512/pic/acc3_tassel.png');
-  earringImages[3] = loadImage('20260512/pic/acc4_jade.png');
-  earringImages[4] = loadImage('20260512/pic/acc5_phoenix.png');
+  earringImages[0] = loadImage('pic/acc/acc1_ring.png');
+  earringImages[1] = loadImage('pic/acc/acc2_pearl.png');
+  earringImages[2] = loadImage('pic/acc/acc3_tassel.png');
+  earringImages[3] = loadImage('pic/acc/acc4_jade.png');
+  earringImages[4] = loadImage('pic/acc/acc5_phoenix.png');
 }
 
 function setup() {
@@ -103,13 +103,13 @@ function drawEarring(pt, imgW, imgH) {
   let dx = map(pt.x, 0, vW, -imgW / 2, imgW / 2);
   let dy = map(pt.y, 0, vH, -imgH / 2, imgH / 2);
   
-  // 比率位移：往外移動影像寬度的 3%，往上移動影像高度的 2%
+  // 比率位移：根據影像寬高，將耳環往外移動 3%，往上移動 2%
   // dx 為負代表畫面左邊(右耳)，往外即是減少 dx；dx 為正代表畫面右邊(左耳)，往外即是增加 dx
   dx += (dx < 0 ? -1 : 1) * (imgW * 0.03);
   dy -= (imgH * 0.02);
 
   // 檢查圖片是否已成功載入且有效 (width > 1 代表圖片已載入)
-  // 這樣即使某張圖片 404 也不會導致整個畫面卡住
+  // 增加此判斷可避免因為圖片載入失敗 (404) 導致 draw 迴圈停止
   let img = earringImages[currentImgIndex];
   if (img && img.width > 1) {
     push();
