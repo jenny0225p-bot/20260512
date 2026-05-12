@@ -103,16 +103,16 @@ function drawEarring(pt, imgW, imgH) {
   let dx = map(pt.x, 0, vW, -imgW / 2, imgW / 2);
   let dy = map(pt.y, 0, vH, -imgH / 2, imgH / 2);
   
-  // 比率位移：往外移動影像寬度的 2%，往上移動影像高度的 1%
+  // 比率位移：往外移動影像寬度的 3%，往上移動影像高度的 2%
   // dx 為負代表畫面左邊(右耳)，往外即是減少 dx；dx 為正代表畫面右邊(左耳)，往外即是增加 dx
-  dx += (dx < 0 ? -1 : 1) * (imgW * 0.02);
-  dy -= (imgH * 0.01);
+  dx += (dx < 0 ? -1 : 1) * (imgW * 0.03);
+  dy -= (imgH * 0.02);
 
   // 繪製耳環圖片
   push();
   imageMode(CENTER);
-  // 依影像比例設定耳環大小，並繪製當前選中的圖片
-  image(earringImages[currentImgIndex], dx, dy + 15, imgW * 0.05, imgH * 0.08); 
+  // 依影像比例設定耳環大小 (寬度為影像 6%, 高度為影像 10%)，並繪製當前選中的圖片
+  image(earringImages[currentImgIndex], dx, dy, imgW * 0.06, imgH * 0.1); 
   pop();
 }
 
